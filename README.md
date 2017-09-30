@@ -1,0 +1,1 @@
+This utility takes in a HTML file of the NCI timetable and produces CSV version which can be searched and filtered using Excel.
