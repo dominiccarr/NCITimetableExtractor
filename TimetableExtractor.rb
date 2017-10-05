@@ -121,12 +121,18 @@ end
 sessions = sessions.uniq
 require "csv"
 
+max = sessions.max_by { |mod| mod.programmes.length }
+max_progs = max.programmes.length
+max = sessions.max_by { |mod| mod.team.length }
+max_team = max.team.length
+
 CSV.open("test.csv", "wb") do |csv|
   csv << %w(Module Type team1 team1 team1 team1 Location Weeks Day Start End Programme)
   sessions.each { |session| 
     arr = [session.module_name, session.type]
-    4.times { |i| arr << session.team[i] }
-    arr += [session.location, session.weeks, session.day, session.start_time, session.end_time, session.programmes.inspect]
+    max_team.times { |i| arr << session.team[i] }
+    arr += [session.location, session.weeks, session.day, session.start_time, session.end_time]
+    max_progs.times { |i| arr << session.programmes[i] }
     csv << arr
   }
 end
