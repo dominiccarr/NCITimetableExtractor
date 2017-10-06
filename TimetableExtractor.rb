@@ -39,7 +39,7 @@ class TeachingSession
   end
   
   def eql?(other)
-    if (start_time == other.start_time) and (team == other.team) and (weeks == other.weeks) and (location == other.location)
+    if (start_time == other.start_time) and (team == other.team) and (weeks == other.weeks) and (location == other.location) and (day == other.day) and (type == other.type)
 		  other.add_programme(programme)
 		  return true
 	end
@@ -89,7 +89,7 @@ doc.search('/html/body/table[contains(@class, "grid-border-args")]').each do |ce
         
      var.each { |session|
            
-      if session.attributes["class"] != nil and session.attributes["class"].value =~ /Lab|Lec|Book|object-cell-border/
+      if session.attributes["class"] != nil and session.attributes["class"].value =~ /Lab|Tut|Lec|Book|object-cell-border/
               
         duration = session.attributes['colspan'].content.to_i
         time = times.search("td[#{c}]")[0].content
