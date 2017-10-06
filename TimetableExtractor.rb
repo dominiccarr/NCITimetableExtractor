@@ -4,7 +4,7 @@ require 'cgi'
 
 class TeachingSession
 	
-	attr_accessor :module_name, :type, :team, :location, :weeks, :start_time, :end_time, :programme, :day, :programmes
+	attr_accessor :module_name, :type, :team, :location, :weeks, :start_time, :end_time, :programme, :day, :programmes, :assistants
 	
 	def initialize(module_name, type, team, location, weeks, time, programme, duration, day)
 		@module_name = module_name
@@ -26,8 +26,8 @@ class TeachingSession
   end
   
   def filter
-    assistants = team.select { |member| member.match(/^(LA|TA)/)}
-    @team = @team - assistants
+    @assistants = team.select { |member| member.match(/^(LA|TA)/)}
+    @team = @team - @assistants
   end
   
   def hash
@@ -125,12 +125,25 @@ max = sessions.max_by { |mod| mod.programmes.length }
 max_progs = max.programmes.length
 max = sessions.max_by { |mod| mod.team.length }
 max_team = max.team.length
+max = sessions.max_by { |mod| mod.assistants.length }
+max_assistants = max.assistants.length
 
-CSV.open("test.csv", "wb") do |csv|
-  csv << %w(Module Type team1 team1 team1 team1 Location Weeks Day Start End Programme)
+CSV.open("NCI Timetable.csv", "wb") do |csv|
+  headers = %w(Module Type) 
+  max_team.times { |i| headers << "Team Member #{i+1}" }
+  
+  max_assistants.times { |i| headers << "Assistant #{i+1}" }
+
+  headers << %w(Location Weeks Day Start End)
+  max_progs.times { |i| headers << "Programme #{i+1}" }
+  headers.flatten!
+  
+  csv << headers
+  
   sessions.each { |session| 
     arr = [session.module_name, session.type]
     max_team.times { |i| arr << session.team[i] }
+    max_assistants.times { |i| arr << session.assistants[i] }
     arr += [session.location, session.weeks, session.day, session.start_time, session.end_time]
     max_progs.times { |i| arr << session.programmes[i] }
     csv << arr
